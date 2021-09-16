@@ -1,10 +1,9 @@
-import sqlite3
-from flask import Flask, render_template, request
+from cs50 import SQL
+from flask import Flask, render_template, request, redirect 
 
 app = Flask(__name__)
 
-db = sqlite3.connect("froshims.db", check_same_thread=False)
-
+db = SQL("sqlite:///froshims.db")
 
 SPORTS = [
     "Dodgeball",
@@ -13,7 +12,6 @@ SPORTS = [
     "Hockey",
     "Chess"
 ]
-
 
 @app.route("/")
 def index():
@@ -30,9 +28,11 @@ def register():
         return render_template("error.html", message="Missing sport")
     if sport not in SPORTS:
         return render_template("error.html", message="Invaid sport")
+    db.execute("INSERT INTO registrants (name,sport) VALUES (?, ?)", name, sport)
+    return redirect("/registrants")
 
-    db.execute("INSERT INTO registrants (name,sport) VALUES (?, ?)",
-               (name, sport))
-
+@app.route("/registrants")
+def registrants():
     registrants = db.execute("SELECT * FROM registrants")
+
     return render_template("registrants.html", registrants=registrants)
