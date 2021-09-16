@@ -10,11 +10,9 @@
   />
   <select name="sport">
     <option disabled selected value="Sport">Sport</option>
-    <option value="Dodgeball">Dodgeball</option>
-    <option value="Cricket">Cricket</option>
-    <option value="Soccer">Soccer</option>
-    <option value="Hockey">Hockey</option>
-    <option value="Chess">Chess</option>
+    {% for sport in sports %}
+    <option value="{{ sport }}">{{ sport }}</option>
+    {% endfor %}
   </select>
   <input type="submit" value="register" />
 </form>
