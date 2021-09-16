@@ -1,8 +1,9 @@
+import sqlite3
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-REGISTRANTS = {}
+db = sqlite3.connect("froshims.db", check_same_thread=False)
 
 
 SPORTS = [
@@ -30,6 +31,8 @@ def register():
     if sport not in SPORTS:
         return render_template("error.html", message="Invaid sport")
 
-    REGISTRANTS[name] = sport
-    print(REGISTRANTS)
-    return render_template("registrants.html", registrants=REGISTRANTS)
+    db.execute("INSERT INTO registrants (name,sport) VALUES (?, ?)",
+               (name, sport))
+
+    registrants = db.execute("SELECT * FROM registrants")
+    return render_template("registrants.html", registrants=registrants)
